@@ -143,72 +143,73 @@ player.current_room = world.starting_room
 
 # New traversal code - BFT - FUNCTIONAL
 
-# qq = Queue()
-# qq.enqueue([player.current_room])
-# # visited = {}
-# while qq.size() > 0:
-#     path = qq.dequeue()
-#     if path[-1] not in visited_rooms:
-#         print(path[-1].id)
-#         visited_rooms.add(path[-1])
-#         for direction in path[-1].get_exits():
-#             path_copy = list(path)
-#             path_copy.append(path[-1].get_room_in_direction(direction))
-#             traversal_path.append(direction)
-#             qq.enqueue(path_copy)
-
-# Attempt - DFT - actual attempt
-
-ss = Stack()
-ss.push([player.current_room])
+qq = Queue()
+qq.enqueue([player.current_room])
+# visited = {}
 visited = set()
-graph = {}
-order = []
-while ss.size() > 0:
-    path = ss.pop()
-    room = path[-1]
-    if room not in visited:
-        # print(room)
-        order.append(room.id)
-        graph[room.id] = {}
-        # print(room.id)
-        visited.add(room)
-        for direction in room.get_exits():
-            graph[room.id][room.get_room_in_direction(direction).id] = direction 
-        # exits = room.get_exits()
-        # for i range(len(exits)):
-        #     exit = random.choice(exits)
-        #     exits.remove(direction)
-        #     new_path = list(path)
-        #     new_path.append(path[-1].get_room_in_direction(direction))
-        #     ss.push(new_path)
-        for direction in room.get_exits():
-            new_path = list(path)
-            new_path.append(room.get_room_in_direction(direction))
-            ss.push(new_path)
+while qq.size() > 0:
+    path = qq.dequeue()
+    if path[-1] not in visited:
+        print(path[-1].id)
+        visited.add(path[-1])
+        for direction in path[-1].get_exits():
+            path_copy = list(path)
+            path_copy.append(path[-1].get_room_in_direction(direction))
+            traversal_path.append(direction)
+            qq.enqueue(path_copy)
 
-    # print(graph,order)
-    # print(graph)
+# # Attempt - DFT - actual attempt - improved and good
+
+# ss = Stack()
+# ss.push([player.current_room])
+# visited = set()
+# graph = {}
+# order = []
+# while ss.size() > 0:
+#     path = ss.pop()
+#     room = path[-1]
+#     if room not in visited:
+#         # print(room)
+#         order.append(room.id)
+#         graph[room.id] = {}
+#         # print(room.id)
+#         visited.add(room)
+#         for direction in room.get_exits():
+#             graph[room.id][room.get_room_in_direction(direction).id] = direction 
+#         # exits = room.get_exits()
+#         # for i range(len(exits)):
+#         #     exit = random.choice(exits)
+#         #     exits.remove(direction)
+#         #     new_path = list(path)
+#         #     new_path.append(path[-1].get_room_in_direction(direction))
+#         #     ss.push(new_path)
+#         for direction in room.get_exits():
+#             new_path = list(path)
+#             new_path.append(room.get_room_in_direction(direction))
+#             ss.push(new_path)
+
+#     # print(graph,order)
+#     # print(graph)
 
 
 
 #traversal while loop:
 
-i = 0
-while(i < (len(order) - 1)):
-    if(order[i+1] in graph[order[i]].keys()):
-        traversal_path.append(graph[order[i]][order[i+1]])
-    else:
-        path = bfs(graph,order[i],order[i+1])
-        print(path)
-        j=0
-        while(j < (len(path)-1)):
-            # print(path[j],path[j+1])
-            traversal_path.append(graph[path[j]][path[j+1]])
-            j += 1
-    i += 1
+# i = 0
+# while(i < (len(order) - 1)):
+#     if(order[i+1] in graph[order[i]].keys()):
+#         traversal_path.append(graph[order[i]][order[i+1]])
+#     else:
+#         path = bfs(graph,order[i],order[i+1])
+#         print(path)
+#         j=0
+#         while(j < (len(path)-1)):
+#             # print(path[j],path[j+1])
+#             traversal_path.append(graph[path[j]][path[j+1]])
+#             j += 1
+#     i += 1
 
-print(traversal_path)
+# print(traversal_path)
 
 
 for move in traversal_path:
