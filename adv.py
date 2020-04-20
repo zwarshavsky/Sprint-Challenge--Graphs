@@ -15,12 +15,12 @@ world = World()
 # map_file = "maps/test_line.txt"
 # map_file = "maps/test_cross.txt"
 # map_file = "maps/test_loop.txt"
-# map_file = "maps/test_loop_fork.txt"
-map_file = "maps/main_maze.txt"
+map_file = "maps/test_loop_fork.txt"
+# map_file = "maps/main_maze.txt"
 
 # Loads the map into a dictionary
-room_graph=literal_eval(open(map_file, "r").read())
-world.load_graph(room_graph)
+origin_room_graph=literal_eval(open(map_file, "r").read())
+world.load_graph(origin_room_graph)
 
 # Print an ASCII map
 world.print_rooms()
@@ -31,196 +31,138 @@ player = Player(world.starting_room)
 # traversal_path = ['n', 'n']
 traversal_path = []
 
+room_graph = {}
+for i in range(len(origin_room_graph)):
+    room_graph[i] = origin_room_graph[i]
 
-def bfs(graph,starting_vertex, destination_vertex):
-    """
-    Return a list containing the shortest path from
-    starting_vertex to destination_vertex in
-    breath-first order.
-    """
-    # Create a q and enqueue starting vertex
-    qq = Queue()
-    qq.enqueue([starting_vertex])
-    # Create a set of traversed vertices
-    visited = set()
-    # visited = []
-    # While queue is not empty:
-    while qq.size() > 0:
-        # dequeue/pop the first vertex
-        path = qq.dequeue()
-        # if not visited
-        if path[-1] not in visited:
-            # DO THE THING!!!!!!!
-            print(path[-1])
-            # mark as visited
-            visited.add(path[-1])
-            print(path)
-            # visited.append(path[-1])
-            # enqueue all neightbors
-            if path[-1] == destination_vertex:
-                return path
-            for next_vert in graph[path[-1]].keys():
-                new_path = list(path)
-                # print(new_path)
-                new_path.append(next_vert)
-                qq.enqueue(new_path)
-            # print(visited)
+
+
+#Created Graph Object for DFS Method
+gg = Graph()
+for i in room_graph:
+        gg.add_vertex(i)
+for i in room_graph:
+    for key in room_graph[i][1]:
+        gg.add_edge(i,room_graph[i][1][key])
+
+# copy_of_origin_room_graph = origin_room_graph
+# for key in copy_of_origin_room_graph:
+#     copy_of_origin_room_graph[key][1])
+
+
+# print(origin_room_graph[1][1])
+
+
+
+print(world.rooms[0].get_exits())
+
+dft_path = gg.dft(0)
+print(dft_path)
+
+
+# t_path = []
+# count = 0 
+# for i in gg.vertices:
+#     t_path.append(gg.bfs(i,i+1))
+
+# # print(gg.vertices)
+# # print(t_path[:3])
+# # print(len(t_path))
+# v_s = set()
+# for path in t_path:
+#     if path:
+#         # print(path)
+#         v_s.add(path[0])
+#         # while len(v_s) < len(gg.vertices):
+#         for index,room in enumerate(path):
+#                 try:
+#                     room1 = room
+#                     room2 =  path[index+1]
+#                     # print(room1,room2)
+#                     for _ in room_graph[room1][1].items():
+#                         if (room2) in _:
+#                             direction = _[0] 
+#                             # print(direction)
+#                             traversal_path.append(direction)
+#                             v_s.add(room2)
+#                         # print("line1:",room,_[0])
+#                         # print("line2:",room_graph[room][1].items()[0])
+#                 except:
+#                     continue
+
+# print(len(v_s))
+# print(gg.vertices)
+# v_s = set()
+# for path in t_path:
+#     if path:
+#         # print(path)
+#         v_s.add(path[0])
+#         for index,room in enumerate(path):
+#                 try:
+#                     room1 = room
+#                     room2 =  path[index+1]
+#                     if (room2) not in v_s:
+#                         for exit_options in room_graph[room1][1].items():
+#                             direction = exit_options[0] 
+#                             traversal_path.append(direction)
+#                             v_s.add(room2)
+#                             print("new room!!",room2,v_s)
+#                     elif (room2) in v_s:
+#                         for neighbor in gg.get_neighbors(room1):
+#                             print("neighbor of current room:",neighbor)
+#                             if neighbor not in v_s:
+#                                 print("possible item for jump:",neighbor)
+#                                 for exit_options in room_graph[neighbor][1].items():
+#                                     print("exit_options:",exit_options,"for:",item)
+                                #     if item not in v_s:
+                                #         print(_[0],_[1])
+                                # print(f"been to {room2} already!")
+                                # print("new path awaits!")
+                                # print(item,room_graph[item][1])
+                                # print(room_graph[item][1]) 
+                            # else:
+                            #     pass
+                                # print("no other choice")
+
+
+                            # elif item in gg.get_neighbors(room2) not in v_s:
+                            #     print("eureka!!",room2,v_s,direction) 
+                # except:
+                #     continue
+
+# print(len(traversal_path))
+# print(len(traversal_path))
+# print(traversal_path)
+# print(len(t_path))
+# print(t_path)
+# print(v_s)
+
+# print(3 in gg.get_neighbors(0))
     
-    pass  # TODO
+
+# next steps: 1) Look up the current room's available rooms (get_neighbors), if the other available room are not in the visited_set, then go there
 
 
 # TRAVERSAL TEST
-visited_rooms = set()
-player.current_room = world.starting_room
+# visited_rooms = set()
+# player.current_room = world.starting_room
 # visited_rooms.add(player.current_room)
+# print(player.current_room.id)
 
-
-### Traversal Code ###
-
-# qq = Queue()
-# # visited_rooms.add(player.current_room.name)
-# qq.enqueue([player.current_room.id])
-# room_history = {}
-# while len(visited_rooms) < len(world.rooms):
-#     path = qq.dequeue()
-#     # print("path:",path)
-#     if path[-1] not in visited_rooms:
-#         visited_rooms.add(path[-1])
-#         print(visited_rooms)
-#         for direction in player.current_room.get_exits():
-#             # print(player.current_room.name)
-#             room_history[player.current_room.id] = []
-#             room_history[player.current_room.id].append(direction)
-#             traversal_path.append(direction)
-#             # print(f"You can walk {direction}!")
-#             player.travel(direction, False)
-#             path_copy = list(path)
-#             path_copy.append(player.current_room.id)
-#             qq.enqueue(path_copy)
-#             # print(qq.size())
-            
-        
-    # else:
-    #     qq.dequeue()
-            
-        # if "n" in player.current_room.get_exits():
-        #     print("You can walk north!")
-        #     print("Queue size: -------", qq.size())
-        #     player.travel("n", False)
-        #     print(player.current_room)
-        #     path_copy = list(path)
-        #     path_copy.append(player.current_room.name)
-        #     qq.enqueue(path_copy)
-        # elif "s" in player.current_room.get_exits():
-        #     print("You can walk south!")
-        #     player.travel("s", False)
-        #     print(player.current_room.name)
-        #     path_copy = list(path)
-        #     path_copy.append(player.current_room.name)
-        #     qq.enqueue(path_copy)
-        # elif "e" in player.current_room.get_exits():
-        #     print("You can walk east!")
-        #     player.travel("e", False)
-        #     print(player.current_room.name)
-        #     path_copy = list(path)
-        #     path_copy.append(player.current_room.name)
-        #     qq.enqueue(path_copy)
-        # elif "w" in player.current_room.get_exits():
-        #     print("You can walk west!")
-        #     player.travel("w", False)
-        #     print(player.current_room.name)
-        #     path_copy = list(path)
-        #     path_copy.append(player.current_room.name)
-        #     qq.enqueue(path_copy)
-        # else:
-        #     print("not my game, man!")
-        # for room in player.travel("n",True) or player.travel("s",True) or player.travel("e",True) or player.travel("w",True):
-           
-# print(len(traversal_path),traversal_path,len(visited_rooms),visited_rooms,qq.size(),room_history)
-# print(visited_rooms,room_history)
-
-
-
-# New traversal code - BFT - FUNCTIONAL
-
-qq = Queue()
-qq.enqueue([player.current_room])
-# visited = {}
-visited = set()
-while qq.size() > 0:
-    path = qq.dequeue()
-    if path[-1] not in visited:
-        print(path[-1].id)
-        visited.add(path[-1])
-        for direction in path[-1].get_exits():
-            path_copy = list(path)
-            path_copy.append(path[-1].get_room_in_direction(direction))
-            traversal_path.append(direction)
-            qq.enqueue(path_copy)
-
-# # Attempt - DFT - actual attempt - improved and good
-
-# ss = Stack()
-# ss.push([player.current_room])
-# visited = set()
-# graph = {}
-# order = []
-# while ss.size() > 0:
-#     path = ss.pop()
-#     room = path[-1]
-#     if room not in visited:
-#         # print(room)
-#         order.append(room.id)
-#         graph[room.id] = {}
-#         # print(room.id)
-#         visited.add(room)
-#         for direction in room.get_exits():
-#             graph[room.id][room.get_room_in_direction(direction).id] = direction 
-#         # exits = room.get_exits()
-#         # for i range(len(exits)):
-#         #     exit = random.choice(exits)
-#         #     exits.remove(direction)
-#         #     new_path = list(path)
-#         #     new_path.append(path[-1].get_room_in_direction(direction))
-#         #     ss.push(new_path)
-#         for direction in room.get_exits():
-#             new_path = list(path)
-#             new_path.append(room.get_room_in_direction(direction))
-#             ss.push(new_path)
-
-#     # print(graph,order)
-#     # print(graph)
-
-
-
-#traversal while loop:
-
-# i = 0
-# while(i < (len(order) - 1)):
-#     if(order[i+1] in graph[order[i]].keys()):
-#         traversal_path.append(graph[order[i]][order[i+1]])
-#     else:
-#         path = bfs(graph,order[i],order[i+1])
-#         print(path)
-#         j=0
-#         while(j < (len(path)-1)):
-#             # print(path[j],path[j+1])
-#             traversal_path.append(graph[path[j]][path[j+1]])
-#             j += 1
-#     i += 1
-
+# step = 0
+# print(t_path) 
 # print(traversal_path)
+# for move in traversal_path:
+#     step += 1 
+#     player.travel(move)
+#     visited_rooms.add(player.current_room)
+#     print(step,move,player.current_room.id)
 
-
-for move in traversal_path:
-    player.travel(move)
-    visited_rooms.add(player.current_room)
-
-if len(visited_rooms) == len(room_graph):
-    print(f"TESTS PASSED: {len(traversal_path)} moves, {len(visited_rooms)} rooms visited")
-else:
-    print("TESTS FAILED: INCOMPLETE TRAVERSAL")
-    print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
+# if len(visited_rooms) == len(room_graph):
+#     print(f"TESTS PASSED: {len(traversal_path)} moves, {len(visited_rooms)} rooms visited")
+# else:
+#     print("TESTS FAILED: INCOMPLETE TRAVERSAL")
+#     print(f"{len(room_graph) - len(visited_rooms)} unvisited rooms")
 
 
 
@@ -254,24 +196,6 @@ else:
 #     gg.add_vertex(content[i][0])
 # for i in range len(content):
 #     gg.add_edge(content[i][0])
-
-
-
-
-
-# room_graph=literal_eval(open(map_file, "r").read())
-# print(room_graph)
-# for i in room_graph:
-#     gg.add_vertex(i)
-
-# for i in room_graph:
-#     gg.add_edge(room)graph[i])
-
-# print(gg.vertices)
-
-
-
-
 
 
 
